@@ -63,9 +63,3 @@ x='TACGTCAGC'
 y='TATGTCATGC'
 D, alignmentScore=globalAlignment(x,y,scoringMatrix)
 alignment, transcript=traceback(x,y, D, scoringMatrix)
-
-print (D)
-print('Alignment and edit transcript:')
-print(alignment)
-print(transcript)
-print('Alignment score:',alignmentScore)

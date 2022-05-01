@@ -108,10 +108,3 @@ def bwm_search(t, query):
         #print([start,end])
     return [start,end]
 
-t='BANANA$'
-p='ANA'
-#print(bwtViaSa(t))
-#print(list(suffixArray(t)))
-#print(c_matrix_insert(t))  
-#print(occ_matrix_insert(t))
-print(bwm_search(t,p))
