@@ -86,9 +86,14 @@ def occ_matrix_insert(t):
             occ[firstCols[j]][i]=val
     return occ
 
-def bwm_search(t, query):
-    c=c_matrix_insert(t)  
-    occ=occ_matrix_insert(t)
+
+# t = 'banana$'
+# c=c_matrix_insert(t)  
+# occ=occ_matrix_insert(t)
+# firstCols=firstColumnBwm(t)
+# suffix_arr = suffixArray(t)
+
+def bwm_search(query,c,occ,firstCols,suffix_arr):
     p=query[::-1]
     start=0
     end=0
@@ -96,7 +101,6 @@ def bwm_search(t, query):
         character_c=p[i]
         if i==0:
             start=c[character_c]+1
-            firstCols=firstColumnBwm(t)
             character_c_next=''
             for j in range(len(firstCols)):
                 if firstCols[j-1]==character_c:
@@ -105,6 +109,11 @@ def bwm_search(t, query):
         else:
             start=c[character_c]+occ[character_c][start-1-1]+1
             end=c[character_c]+occ[character_c][end-1]
-        #print([start,end])
-    return [start,end]
+    
+    index_list = []
+    for element in list(suffix_arr)[start-1:end]:
+        value, index = element
+        index_list.append(index)
+
+    return sorted(index_list)
 
