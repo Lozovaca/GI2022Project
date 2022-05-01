@@ -38,7 +38,7 @@ t = readFASTA(fasta_file)
 t+='$'
 c = c_matrix_insert(t)  
 occ = occ_matrix_insert(t)
-suffix_arr = suffixArray(t)    
+suffix_arr = list(suffixArray(t))    
 firstCols = firstColumnBwm(t)  # HERE WE HAVE FM-INDEX OF OUR FASTA FILE
 reads = readFASTQ(fastq_file)
 
@@ -46,7 +46,7 @@ reads = readFASTQ(fastq_file)
 for read in reads:
     seed = read[0:seed_length]
     print(seed)
-    index = bwm_search(seed,c,occ,firstCols,suffix_arr)
+    index = bwm_search(seed, c, occ, suffix_arr)
     print(index)
     print(len(index))
 
