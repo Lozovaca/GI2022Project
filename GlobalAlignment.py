@@ -59,7 +59,13 @@ def traceback(x, y, D, s):
      a='\n'.join([tx[::-1], align[::-1], ty[::-1]])
      return a, t[::-1]
 
-x='TACGTCAGC'
-y='TATGTCATGC'
+#x='TACGTCAGC'
+#y='TATGTCATGC'
+x='AGGTTTAAAAGGAAATAACTTTAAGCATGTGTCTAAATAGCAAGTAATGTTTTAGAGCGGATTCTCTTAAATTCAGCTT'
+y='AGGAACCATAGCCATTGAAATGGATGAGGGAACCTATATACATGCACTCGACAATGGCCTTTTTACCCTGGGAGCT'
 D, alignmentScore=globalAlignment(x,y,scoringMatrix)
 alignment, transcript=traceback(x,y, D, scoringMatrix)
+print(D)
+print(alignmentScore)
+print(alignment)
+print(transcript)
