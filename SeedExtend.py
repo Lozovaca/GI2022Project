@@ -41,7 +41,7 @@ def reverse_complement(read):
 # args = parser.parse_args()
 
 
-def seedExtend(t, reads, seed_length, margin):
+def seed_extend(t, reads, seed_length, margin):
     t+='$' #necessary for test for bwt algorithm
     c = c_matrix_insert(t)  
     occ = occ_matrix_insert(t)
@@ -80,8 +80,7 @@ t = readFASTA(fasta_file)
 reads = readFASTQ(fastq_file)
 seed_length = 3
 margin = 3
-listAlign=seedExtend(t, reads, seed_length, margin)
-print(listAlign)
+listAlign=seed_extend(t, reads, seed_length, margin)
 
 
 
