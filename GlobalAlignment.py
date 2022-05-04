@@ -24,24 +24,25 @@ def traceback(x, y, D, s):
      align=''
      i=len(x)
      j=len(y)
+     
      while i>0 or j>0:
-          d, h, v=-100,-100, -100
+          d, h, v=-10000,-10000, -10000
           if i>0 and j>0:
+               delta=0 if x[i-1]==y[j-1] else 1  
                d=D[i-1,j-1]+s(x[i-1],y[j-1])
           if i>0:
                v=D[i-1,j]+s(x[i-1],'_')
           if j>0:
                h=D[i,j-1]+s('_',y[j-1])
           if d>=h and d>=v:
-               delta=0 if x[i-1]==y[j-1] else 1  
+               tx+=x[i-1]
+               ty+=y[j-1]
                if delta==0:  
                     align+='|'
                     t+='M'
                else:
                     align+=' '
                     t+='R'
-               tx+=x[i-1]
-               ty+=y[j-1]
                i-=1
                j-=1
           elif h>=v:
@@ -59,13 +60,4 @@ def traceback(x, y, D, s):
      a='\n'.join([tx[::-1], align[::-1], ty[::-1]])
      return a, t[::-1]
 
-#x='TACGTCAGC'
-#y='TATGTCATGC'
-x='AGGTTTAAAAGGAAATAACTTTAAGCATGTGTCTAAATAGCAAGTAATGTTTTAGAGCGGATTCTCTTAAATTCAGCTT'
-y='AGGAACCATAGCCATTGAAATGGATGAGGGAACCTATATACATGCACTCGACAATGGCCTTTTTACCCTGGGAGCT'
-D, alignmentScore=globalAlignment(x,y,scoringMatrix)
-alignment, transcript=traceback(x,y, D, scoringMatrix)
-print(D)
-print(alignmentScore)
-print(alignment)
-print(transcript)
+
