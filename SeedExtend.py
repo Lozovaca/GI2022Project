@@ -1,21 +1,23 @@
 import argparse
 
 from sklearn.cluster import AgglomerativeClustering
-from Burrows0Wheeler import c_matrix_insert,occ_matrix_insert,firstColumnBwm,bwm_search,suffixArray
+from Burrows0Wheeler import bwtViaBwm, c_matrix_insert,occ_matrix_insert,firstColumnBwm,bwm_search,suffixArray, rotations
 from Bio import SeqIO
 from GlobalAlignment import globalAlignment, traceback, scoringMatrix
 
 def readFASTA(fasta_file):
-    arr = []
+    """arr = []
     for seq_record in SeqIO.parse(fasta_file, "fasta"):
         arr.append(seq_record.seq)
-    return arr[0]
+    return arr[0]"""
+    return list(map(lambda f: str(f.seq), SeqIO.parse(fasta_file, "fasta")))
 
 def readFASTQ(fastq_file):
-    arr = []
+    """arr = []
     for seq_record in SeqIO.parse(fastq_file, "fastq"):
         arr.append(seq_record.seq)
-    return arr
+    return arr"""
+    return list(map(lambda f: str(f.seq), SeqIO.parse(fastq_file, "fastq")))
 
 def reverse_complement(read):
     rev_read=''
@@ -41,47 +43,53 @@ def reverse_complement(read):
 # args = parser.parse_args()
 
 
-def seed_extend(t, reads, seed_length, margin):
-    t+='$' #necessary for test for bwt algorithm
-    c = c_matrix_insert(t)  
-    occ = occ_matrix_insert(t)
-    suffix_arr = list(suffixArray(t))    
-    #firstCols = firstColumnBwm(t)  # HERE WE HAVE FM-INDEX OF OUR FASTA FILE
-    listAlign=[]
-
-    for read in reads:
-        seed = read[0:seed_length]
-        #print(seed)
-        index = bwm_search(seed, c, occ, suffix_arr)
-        #print(index) #positions list
-        #print(len(index))
-        for pos in index:
-            start=pos+seed_length
-            end=start+(len(read)-seed_length)+margin
-            end=len(t) if end>len(t) else end
-            ref=t[start:end]
-            read_truncated=read[seed_length:]
-            #print(f'Seed:{seed}')
-            #print(f'Read truncated:{read_truncated}')
-            #print(f'Reference truncated:{ref}')
-            D, alignmentScore=globalAlignment(ref,read_truncated, scoringMatrix)
-            #print(D)
-            #print(alignmentScore)
-            alignment, transcript=traceback(ref, read_truncated, D, scoringMatrix)
-       
-            #print(alignment)
-            #print(transcript)
-            listAlign.append((pos, alignmentScore, transcript))
-    return listAlign
-    
-fasta_file = "./example_human_reference.fasta"
-fastq_file = "./example_human_illumina.pe_1.fastq"
+#def seed_extend(t, reads, seed_length, margin):
+fasta_file = "./reference.fasta"
+fastq_file = "./reads.fastq"
 t = readFASTA(fasta_file)
 reads = readFASTQ(fastq_file)
 seed_length = 3
 margin = 3
-listAlign=seed_extend(t, reads, seed_length, margin)
+t+='$' #necessary for test for bwt algorithm
+c = c_matrix_insert(t)
+occ = occ_matrix_insert(t)
+suffix_arr = list(suffixArray(t))    
+#firstCols = firstColumnBwm(t)  # HERE WE HAVE FM-INDEX OF OUR FASTA FILE
+listAlign=[]
+i=0
+for read in reads:
+    i+=1
+    seed = read[0:seed_length]
+    print(seed)
+    index = bwm_search(seed, c, occ, suffix_arr)
+    print(index) #positions list
+    #print(len(index))
+    for pos in index:
+        start=pos+seed_length
+        end=start+(len(read)-seed_length)+margin
+        end=len(t) if end>len(t) else end
+        ref=t[start:end]
+        read_truncated=read[seed_length:]
+        print(f'Seed:{seed}')
+        print(f'Read truncated:{read_truncated}')
+        print(f'Reference truncated:{ref}')
+        D, alignmentScore=globalAlignment(ref,read_truncated, scoringMatrix)
+        #print(D)
+        #print(alignmentScore)
+        alignment, transcript=traceback(ref, read_truncated, D, scoringMatrix)
+       
+        #print(alignment)
+        #print(transcript)
+        listAlign.append((pos, alignmentScore, transcript))
+    if i==1: break
+    
+
+#listAlign=seed_extend(t, reads, seed_length, margin)
+print(listAlign)
 
 
 
-
+#fasta_file = "./reference.fasta"
+#t = readFASTA(fasta_file)
+#t+='$'
+#print(rotations(t))"""

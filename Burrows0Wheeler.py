@@ -91,7 +91,8 @@ def occ_matrix_insert(t):
 #c=c_matrix_insert(t)
 #occ=occ_matrix_insert(t)
 #firstCols=firstColumnBwm(t)
-#suffix_arr = suffixArray(t)
+#suffix_arr = list(suffixArray(t))
+
 
 def bwm_search(query,c,occ,suffix_arr):
     p=query[::-1]
