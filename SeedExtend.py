@@ -1,6 +1,5 @@
 import argparse
 
-from sklearn.cluster import AgglomerativeClustering
 from Burrows0Wheeler import bwtViaBwm, c_matrix_insert,occ_matrix_insert,firstColumnBwm,bwm_search,suffixArray, rotations
 from Bio import SeqIO
 from GlobalAlignment import globalAlignment, traceback, scoringMatrix
@@ -46,14 +45,14 @@ def reverse_complement(read):
 #def seed_extend(t, reads, seed_length, margin):
 fasta_file = "./reference.fasta"
 fastq_file = "./reads.fastq"
-t = readFASTA(fasta_file)
+t = readFASTA(fasta_file)[0]
 reads = readFASTQ(fastq_file)
 seed_length = 3
 margin = 3
 t+='$' #necessary for test for bwt algorithm
 c = c_matrix_insert(t)
 occ = occ_matrix_insert(t)
-suffix_arr = list(suffixArray(t))    
+suffix_arr = suffixArray(t)   
 #firstCols = firstColumnBwm(t)  # HERE WE HAVE FM-INDEX OF OUR FASTA FILE
 listAlign=[]
 i=0

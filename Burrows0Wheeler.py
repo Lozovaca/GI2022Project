@@ -20,7 +20,7 @@ def suffixArray(s):
     function here for simplicity, but we can do better. """
     satups = sorted([(s[i:], i) for i in range(len(s))])
     # Extract and return just the offsets
-    return map(lambda x: (x[0],x[1]), satups)
+    return list(map(lambda x: x[1], satups))
 def bwtViaSa(t):
     """ Given T, returns BWT(T) by way of the suffix array. """
     bw = []
@@ -63,7 +63,7 @@ def reverseBwt(bw):
     return t
     
 def c_matrix_insert(t):
-    firstCols=firstColumnBwm(t)
+    firstCols=sorted(firstColumnBwm(t))
     c_matrix={}
     for i in range(len(firstCols)-1):
         if i==0: c_matrix[firstCols[i]]=i
@@ -118,7 +118,7 @@ def bwm_search(query,c,occ,suffix_arr):
     
     index_list = []
     for element in suffix_arr[start-1:end]:
-        value, index = element
+        index = element
         index_list.append(index)
 
     return sorted(index_list)
