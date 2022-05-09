@@ -55,13 +55,11 @@ occ = occ_matrix_insert(t)
 suffix_arr = suffixArray(t)   
 #firstCols = firstColumnBwm(t)  # HERE WE HAVE FM-INDEX OF OUR FASTA FILE
 listAlign=[]
-i=0
 for read in reads:
-    i+=1
     seed = read[0:seed_length]
-    print(seed)
+    #print(seed)
     index = bwm_search(seed, c, occ, suffix_arr)
-    print(index) #positions list
+    #print(index) #positions list
     #print(len(index))
     for pos in index:
         start=pos+seed_length
@@ -69,9 +67,9 @@ for read in reads:
         end=len(t) if end>len(t) else end
         ref=t[start:end]
         read_truncated=read[seed_length:]
-        print(f'Seed:{seed}')
-        print(f'Read truncated:{read_truncated}')
-        print(f'Reference truncated:{ref}')
+        #print(f'Seed:{seed}')
+        #print(f'Read truncated:{read_truncated}')
+        #print(f'Reference truncated:{ref}')
         D, alignmentScore=globalAlignment(ref,read_truncated, scoringMatrix)
         #print(D)
         #print(alignmentScore)
@@ -80,10 +78,10 @@ for read in reads:
         #print(alignment)
         #print(transcript)
         listAlign.append((pos, alignmentScore, transcript))
-    if i==1: break
     
 
 #listAlign=seed_extend(t, reads, seed_length, margin)
+listAlign.sort(key=lambda el: el[1], reverse=True)
 print(listAlign)
 
 
