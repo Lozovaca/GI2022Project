@@ -43,8 +43,8 @@ def reverse_complement(read):
 
 
 #def seed_extend(t, reads, seed_length, margin):
-fasta_file = "./reference.fasta"
-fastq_file = "./reads.fastq"
+fasta_file = "./example_human_reference.fasta"
+fastq_file = "./example_human_Illumina.pe_1.fastq"
 t = readFASTA(fasta_file)[0]
 reads = readFASTQ(fastq_file)
 seed_length = 3
