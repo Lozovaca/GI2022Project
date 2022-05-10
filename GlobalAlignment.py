@@ -2,7 +2,7 @@ import numpy as np
 def scoringMatrix(x,y):
      if (x=='_' or y=='_'): return -7
      if x==y: return 1
-     minb, maxb=min(x,y), max(x,y),
+     minb, maxb=min(x,y), max(x,y)
      if (minb=='C' and maxb=='T'): return -1
      if (minb=='A' and maxb=='G'): return -1
      return -3

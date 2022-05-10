@@ -2,7 +2,7 @@ import argparse
 
 from Burrows0Wheeler import bwtViaBwm, c_matrix_insert,occ_matrix_insert,firstColumnBwm,bwm_search,suffixArray, rotations
 from Bio import SeqIO
-from GlobalAlignment import globalAlignment, traceback, scoringMatrix
+from GlobalAlignment import globalAlignment, traceback
 
 def readFASTA(fasta_file):
     """arr = []
@@ -42,51 +42,30 @@ def reverse_complement(read):
 # args = parser.parse_args()
 
 
-#def seed_extend(t, reads, seed_length, margin):
-fasta_file = "./example_human_reference.fasta"
-fastq_file = "./example_human_Illumina.pe_1.fastq"
-t = readFASTA(fasta_file)[0]
-reads = readFASTQ(fastq_file)
-seed_length = 3
-margin = 3
-t+='$' #necessary for test for bwt algorithm
-c = c_matrix_insert(t)
-occ = occ_matrix_insert(t)
-suffix_arr = suffixArray(t)   
-#firstCols = firstColumnBwm(t)  # HERE WE HAVE FM-INDEX OF OUR FASTA FILE
-listAlign=[]
-for read in reads:
-    seed = read[0:seed_length]
-    #print(seed)
-    index = bwm_search(seed, c, occ, suffix_arr)
-    #print(index) #positions list
-    #print(len(index))
-    for pos in index:
-        start=pos+seed_length
-        end=start+(len(read)-seed_length)+margin
-        end=len(t) if end>len(t) else end
-        ref=t[start:end]
-        read_truncated=read[seed_length:]
-        #print(f'Seed:{seed}')
-        #print(f'Read truncated:{read_truncated}')
-        #print(f'Reference truncated:{ref}')
-        D, alignmentScore=globalAlignment(ref,read_truncated, scoringMatrix)
-        #print(D)
-        #print(alignmentScore)
-        alignment, transcript=traceback(ref, read_truncated, D, scoringMatrix)
-       
-        #print(alignment)
-        #print(transcript)
-        listAlign.append((pos, alignmentScore, transcript))
-    
-
-#listAlign=seed_extend(t, reads, seed_length, margin)
-listAlign.sort(key=lambda el: el[1], reverse=True)
-print(listAlign)
-
-
-
-#fasta_file = "./reference.fasta"
-#t = readFASTA(fasta_file)
-#t+='$'
-#print(rotations(t))"""
+def seed_extend(t, reads, seed_length, margin, c, occ, suffix_arr, scoringMatrix):
+    listAlign=[]
+    for read in reads:
+        seed = read[0:seed_length]
+        #print(seed)
+        index = bwm_search(seed, c, occ, suffix_arr)
+        #print(index) #positions list
+        #print(len(index))
+        for pos in index:
+            start=pos+seed_length
+            end=start+(len(read)-seed_length)+margin
+            end=len(t) if end>len(t) else end
+            ref=t[start:end]
+            read_truncated=read[seed_length:]
+            #print(f'Seed:{seed}')
+            #print(f'Read truncated:{read_truncated}')
+            #print(f'Reference truncated:{ref}')
+            D, alignmentScore=globalAlignment(ref,read_truncated, scoringMatrix)
+            #print(D)
+            #print(alignmentScore)
+            alignment, transcript=traceback(ref, read_truncated, D, scoringMatrix)
+        
+            #print(alignment)
+            #print(transcript)
+            listAlign.append((pos, alignmentScore, transcript))
+    listAlign.sort(key=lambda el: el[1], reverse=True)
+    return listAlign
