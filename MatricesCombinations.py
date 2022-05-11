@@ -85,6 +85,6 @@ def seed_extend_comb(t, reads, seed_length, margin, c, occ, suffix_arr, scoringM
         
             #print(alignment)
             #print(transcript)
-            listAlign.append((pos, alignmentScore, transcript))
-    listAlign.sort(key=lambda el: el[1], reverse=True)
+            listAlign.append((read, pos, alignmentScore, transcript))
+    listAlign.sort(key=lambda el: el[2], reverse=True)
     return listAlign   
