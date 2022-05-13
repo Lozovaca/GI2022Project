@@ -1,5 +1,6 @@
 import numpy as np
 from Burrows0Wheeler import bwm_search
+from SeedExtend import reverse_complement
 
 def scoringMatrixCombination(x,y, match, mismatch, gap):
      if (x=='_' or y=='_'): return gap
@@ -61,30 +62,50 @@ def traceback_ex(x, y, D, s,match,mismatch, gap):
      return a, t[::-1]
 
 
-def seed_extend_comb(t, reads, seed_length, margin, c, occ, suffix_arr, scoringMatrix, match,mismatch, gap):
-    listAlign=[]
-    for read in reads:
-        seed = read[0:seed_length]
-        #print(seed)
-        index = bwm_search(seed, c, occ, suffix_arr)
-        #print(index) #positions list
-        #print(len(index))
-        for pos in index:
-            start=pos+seed_length
-            end=start+(len(read)-seed_length)+margin
-            end=len(t) if end>len(t) else end
-            ref=t[start:end]
-            read_truncated=read[seed_length:]
-            #print(f'Seed:{seed}')
-            #print(f'Read truncated:{read_truncated}')
-            #print(f'Reference truncated:{ref}')
-            D, alignmentScore=globalAlignment_ex(ref,read_truncated, scoringMatrix, match,mismatch, gap)
-            #print(D)
-            #print(alignmentScore)
-            alignment, transcript=traceback_ex(ref, read_truncated, D, scoringMatrix, match,mismatch, gap)
-        
-            #print(alignment)
-            #print(transcript)
-            listAlign.append((read, pos, alignmentScore, transcript))
-    listAlign.sort(key=lambda el: el[2], reverse=True)
-    return listAlign   
+def seed_extend_comb(t, read, seed_length, margin, c, occ, suffix_arr, scoringMatrix, match,mismatch, gap):
+     listAlign=[]
+     seed = read[0:seed_length]
+     rc_read=reverse_complement(read)
+     rc_seed=rc_read[0:seed_length]
+     #print(read)
+     #print(seed)
+     index = bwm_search(seed, c, occ, suffix_arr)
+     #print(index) #positions list
+     #print(len(index))
+     for pos in index:
+          start=pos+seed_length
+          end=start+(len(read)-seed_length)+margin
+          end=len(t) if end>len(t) else end
+          ref=t[start:end]
+          read_truncated=read[seed_length:]
+          #print(f'Seed:{seed}')
+          #print(f'Read truncated:{read_truncated}')
+          #print(f'Reference truncated:{ref}')
+          D, alignmentScore=globalAlignment_ex(ref,read_truncated, scoringMatrix, match,mismatch, gap)
+          #print(D)
+          #print(alignmentScore)
+          alignment, transcript=traceback_ex(ref, read_truncated, D, scoringMatrix, match,mismatch, gap)
+
+          #print(alignment)
+          #print(transcript)
+          listAlign.append((read, pos, alignmentScore, transcript))
+     index = bwm_search(rc_seed, c, occ, suffix_arr)
+     for pos in index:
+          start=pos+seed_length
+          end=start+(len(rc_read)-seed_length)+margin
+          end=len(t) if end>len(t) else end
+          ref=t[start:end]
+          read_truncated=rc_read[seed_length:]
+          #print(f'Seed:{seed}')
+          #print(f'Read truncated:{read_truncated}')
+          #print(f'Reference truncated:{ref}')
+          D, alignmentScore=globalAlignment_ex(ref,read_truncated, scoringMatrix, match,mismatch, gap)
+          #print(D)
+          #print(alignmentScore)
+          alignment, transcript=traceback_ex(ref, read_truncated, D, scoringMatrix, match,mismatch, gap)
+
+          #print(alignment)
+          #print(transcript)
+          listAlign.append((read, pos, alignmentScore, transcript))
+     listAlign.sort(key=lambda el: el[2], reverse=True)
+     return listAlign   
