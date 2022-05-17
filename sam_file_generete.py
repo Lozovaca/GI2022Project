@@ -17,7 +17,7 @@ for i in range(len(match)):     #first we are making index for reference
         for k in range(len(gap)):
             g = gap[k]
             #bash_command ='../bwa-0.7.15/bwa mem -k ' + str(seed_length) +' -A '+ str(m) +' -B ' + str(miss) + ' -O ' + str(g) + ' '+ reference_file +' ' + fastq_file +' > sam_file{'+ str(m) + '}{' +  str(miss) + '}{' + str(g) + '}.sam';
-            bash_command ='../bwa-0.7.15/bwa mem -t '+ str(nthreads) +' -k ' + str(seed_length) +' -A '+ str(m) +' -B ' + str(miss) + ' -O ' + str(g) + ' '+ reference_file +' ' + fastq_file +' > sam_file['+ str(m) + ',' +  str(miss) + ',' + str(g) + ']_seed_length.sam'
+            bash_command ='../bwa-0.7.15/bwa mem -t '+ str(nthreads) +' -A '+ str(m) +' -B ' + str(miss) + ' -O ' + str(g) + ' '+ reference_file +' ' + fastq_file +' > sam_file['+ str(m) + ',' +  str(miss) + ',' + str(g) + '].sam'
             #A is match score, B is mismatch score, O is gap score
             print(bash_command)   
             os.system(bash_command)
