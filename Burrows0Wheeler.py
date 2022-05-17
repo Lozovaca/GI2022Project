@@ -62,28 +62,29 @@ def reverseBwt(bw):
         rowi = first[c][0] + ranks[rowi]
     return t
     
-def c_matrix_insert(t):
-    firstCols=sorted(firstColumnBwm(t))
+def c_matrix_insert(t):  #creating C matrix for positions of the first appearance 
+    firstCols=sorted(firstColumnBwm(t))   #of each character in the string of first columns of BWT matrix 
     c_matrix={}
     for i in range(len(firstCols)-1):
-        if i==0: c_matrix[firstCols[i]]=i
-        if firstCols[i-1]!=firstCols[i]:  c_matrix[firstCols[i]]=i
+        if i==0: c_matrix[firstCols[i]]=i  #if it's a character '$', put 0th position
+        if firstCols[i-1]!=firstCols[i]:  c_matrix[firstCols[i]]=i  #if these are other characters
     return c_matrix 
 
-def occ_matrix_insert(t):
-    firstCols=firstColumnBwm(t) #first column
-    bwt=bwtViaBwm(t)    #last column
+def occ_matrix_insert(t): #creating Occ matrix where rows are characters from the first column of BWT matrix, columns are characters from 
+                                                    #the last column of BWT matrix
+    firstCols=firstColumnBwm(t) #making first column of BWT matrix
+    bwt=bwtViaBwm(t)    #making last column of BWT matrix
     #occ=[[0 for _ in range(len(bwt))] for _ in range(len(firstCols))]
     occ={}
     firstCols=sorted(set(bwt))
     for nt in firstCols:
-        occ[nt]=[0]*len(bwt)
+        occ[nt]=[0]*len(bwt)    #initializing with 0 in the rows of Occ matrix
     for j in range(len(firstCols)):
         val=0
         for i in range(len(bwt)):
-            if firstCols[j]==bwt[i]: 
-                val+=1
-            occ[firstCols[j]][i]=val
+            if firstCols[j]==bwt[i]: #if a character from the first column is a 
+                val+=1               #character from the last column, add his appearance with 1
+            occ[firstCols[j]][i]=val  #we put a number of appearances of each character in BWT
     return occ
 
 
@@ -91,36 +92,37 @@ def occ_matrix_insert(t):
 #c=c_matrix_insert(t)
 #occ=occ_matrix_insert(t)
 #firstCols=firstColumnBwm(t)
-#suffix_arr = list(suffixArray(t))
+#suffix_arr = list(suffixArray(t))     #testing
 
 
-def bwm_search(query,c,occ,suffix_arr):
-    p=query[::-1]
+def bwm_search(query,c,occ,suffix_arr):  #a method of index search of positions where pattern query matches in text
+                                        #which matrices and suffix array are made
+    p=query[::-1]                       #we are going from the last character in pattern to the left, look at line 105, we are getting it
     start=0
     end=0
-    keys_list=list(c)
+    keys_list=list(c)                   #geting characters of C matrix, actually keys
     for i in range(len(p)):
-        character_c=p[i]
-        if i==0:
-            start=c[character_c]+1
-            character_c_next=''
+        character_c=p[i]               
+        if i==0:                       #if it's the last character, we need the following positions where this character matches in
+            start=c[character_c]+1     #BWT first column by C matrix 
+            character_c_next=''        #start=C(c)+1   end=C(c+1)
             for j in range(len(c)):
                 if j==len(c)-1: 
                     end=0
                     break
-                elif keys_list[j]==character_c:
+                elif keys_list[j]==character_c:  #finding the next character c in keys of C matrix 
                     character_c_next=keys_list[j+1]
                     end=c[character_c_next]
                     break
         else:
-            start=c[character_c]+occ[character_c][start-1-1]+1
-            end=c[character_c]+occ[character_c][end-1]
+            start=c[character_c]+occ[character_c][start-1-1]+1   #if it isn't the last character, we need these positions: 
+            end=c[character_c]+occ[character_c][end-1]        #start=C(c)+Occ(c,start-1)+1 end=C(c)+Occ(c,end)
     
     index_list = []
-    for element in suffix_arr[start-1:end]:
-        index = element
+    for element in suffix_arr[start-1:end]:       #we are using suffix array to find the offset of matching of the pattern to the text
+        index = element                          #these are positions where pattern matches to the parts of rotated characters of the text 
         index_list.append(index)
 
     return sorted(index_list)
 
-#print(bwm_search('ana',c,occ,firstCols,suffix_arr))
+#print(bwm_search('ana',c,occ,firstCols,suffix_arr))  #testing

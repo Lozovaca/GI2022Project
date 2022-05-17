@@ -2,13 +2,13 @@ import numpy as np
 from Burrows0Wheeler import bwm_search
 from SeedExtend import reverse_complement
 
-def scoringMatrixCombination(x,y, match, mismatch, gap):
+def scoringMatrixCombination(x,y, match, mismatch, gap):  #making scoring matrix for each combination of values
      if (x=='_' or y=='_'): return gap
      if x==y: return match
      return mismatch
 
-def globalAlignment_ex(x,y,s,match,mismatch, gap):
-     D=np.zeros((len(x)+1,len(y)+1),dtype=int)
+def globalAlignment_ex(x,y,s,match,mismatch, gap):  #like globalAlignment method defined in GlobalAlignment.py, but with other scoring
+     D=np.zeros((len(x)+1,len(y)+1),dtype=int)     #values
      for i in range(1,len(x)+1):
         D[i,0]=D[i-1,0]+s(x[i-1],'_',match,mismatch, gap)
      for j in range(1,len(y)+1):
@@ -18,7 +18,7 @@ def globalAlignment_ex(x,y,s,match,mismatch, gap):
             D[i,j]=max(D[i-1,j]+s(x[i-1],'_',match,mismatch, gap), D[i,j-1]+s('_',y[j-1],match,mismatch, gap), D[i-1,j-1]+s(x[i-1],y[j-1],match,mismatch, gap))
      return D, D[len(x),len(y)]
 
-def traceback_ex(x, y, D, s,match,mismatch, gap):
+def traceback_ex(x, y, D, s,match,mismatch, gap):   #like traceback method defined in GlobalAlignment.py, but with other scoring values
      tx=''
      ty=''
      t=''
@@ -63,8 +63,8 @@ def traceback_ex(x, y, D, s,match,mismatch, gap):
 
 
 def seed_extend_comb(t, read, seed_length, margin, c, occ, suffix_arr, scoringMatrix, match,mismatch, gap):
-     listAlign=[]
-     seed = read[0:seed_length]
+     listAlign=[]   #same as seed_extend method in SeedExtend.py, but with scoring values to call methods for global alignment for these
+     seed = read[0:seed_length]    #scoring values
      rc_read=reverse_complement(read)
      rc_seed=rc_read[0:seed_length]
      #print(read)
